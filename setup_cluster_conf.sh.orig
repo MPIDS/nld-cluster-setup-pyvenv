@@ -32,7 +32,7 @@ _DRMAA_LIBRARY_PATH=/core/ge/lib/linux-x64/libdrmaa.so
 BUILD_CLUSTER=skadi
 
 # Run tests on which cluster?
-TEST_CLUSTERS="skadi frigg navier"
+TEST_CLUSTERS="skadi frigg navier ull"
 
 
 # DO NOT CHANGE AFTER HERE
