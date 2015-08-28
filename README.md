@@ -7,9 +7,11 @@ H.W.G.
 # Usage
 
 - ```bash
-  cp setup_cluster_conf.sh.orig setup_cluster_conf.sh
+  $ cp setup_cluster_conf.sh.orig setup_cluster_conf.sh
   ```
+  
 - Adjust ``setup_cluster_conf.sh`` according to your needs.
+
 - ```bash
-  ./setup_cluster_scipy.sh
+  $ ./setup_cluster_scipy.sh
   ```
