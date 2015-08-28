@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# source configuration
+source setup_cluster_conf.sh || exit $?
+
+
+# Create Python virtual environment
+$PYTHON_PREFIX/bin/pyvenv $VENV_PREFIX || exit $?
+
+# Modify virtual environment
+echo "" >> $VENV_ACTIVATE
+echo "# Manual additions" >> $VENV_ACTIVATE
+echo 'CLUSTERNAME=`hostname | grep -o "[[:alpha:]]*"`' >> $VENV_ACTIVATE
+echo "" >> $VENV_ACTIVATE
+echo "# C Compiler" >> $VENV_ACTIVATE
+echo "export CC=${GCC_CC}" >> $VENV_ACTIVATE
+echo "export PATH=${GCC_PATH}"':${PATH}' >> $VENV_ACTIVATE
+echo "export LD_LIBRARY_PATH=${GCC_LD_LIBRARY_PATH}"':${LD_LIBRARY_PATH}' >> $VENV_ACTIVATE
+echo "" >> $VENV_ACTIVATE
+echo "# ATLAS" >> $VENV_ACTIVATE
+echo "ATLAS_CLUSTER=${ATLAS_CLUSTER_EXPRESSION}" >> $VENV_ACTIVATE
+echo 'ATLAS_PREFIX=/usr/nld/atlas-'$ATLAS_VERSION'-${ATLAS_CLUSTER}'$ATLAS_SUFFIX >> $VENV_ACTIVATE
+echo 'export LD_LIBRARY_PATH=${ATLAS_PREFIX}/lib:${LD_LIBRARY_PATH}' >> $VENV_ACTIVATE
+echo "" >> $VENV_ACTIVATE
+echo "# DRMAA" >> $VENV_ACTIVATE
+echo "export DRMAA_LIBRARY_PATH=${_DRMAA_LIBRARY_PATH}" >> $VENV_ACTIVATE
+echo "" >> $VENV_ACTIVATE
+echo "# GridMap" >> $VENV_ACTIVATE
+echo 'export SMTP_SERVER=mailer.nld.ds.mpg.de' >> $VENV_ACTIVATE
+echo 'export CREATE_PLOTS=False' >> $VENV_ACTIVATE
+echo 'export ERROR_MAIL_SENDER=$USER@nld.ds.mpg.de' >> $VENV_ACTIVATE
+echo 'export ERROR_MAIL_RECIPIENT=$USER@nld.ds.mpg.de' >> $VENV_ACTIVATE
+
+
+# Source virtual environment
+source $VENV_ACTIVATE || exit $?
+
+# Install base packages
+$PIP_INSTALL_LOGIN pip || exit $?
+$PIP_INSTALL_LOGIN setuptools || exit $?
+$PIP_INSTALL_LOGIN readline || exit $?
+$PIP_INSTALL_LOGIN nose six pkgconfig setuptools-scm six future || exit $?
+$PIP_INSTALL_LOGIN --install-option "--zmq=${ZMQ_PREFIX}" pyzmq || exit $?
+$PIP_INSTALL_LOGIN git+git://github.com/andsor/gridmap || exit $?
+
+# Download further packages for compilation on cluster
+$PIP_DOWNLOAD_LOGIN numpy scipy h5py || exit $?
+
+# NOW EXECUTE setup_cluster_scipy_cluster.sh on one cluster of your choice
+# (default: skadi)
+qsub -q ${TEST_CLUSTER}.q -b yes -S /bin/bash -cwd -j yes -o ${VENV_PREFIX} \
+-sync yes setup_cluster_scipy_cluster.sh || exit $?
+
+
+# Test NumPy on login
+python -c 'import numpy; numpy.show_config()' || exit $?
+python -c 'import numpy; numpy.test()' || exit $?
+
+# Test SciPy on login
+python -c 'import scipy; scipy.show_config()' || exit $?
+python -c 'import scipy; scipy.test()' || exit $?
+
+# Test h5py on login
+python -c 'import h5py; h5py.run_tests()' || exit $?
+
+CLUSTER=${TEST_CLUSTER}
+CLUSTER_LD_LIBRARY_PATH=/usr/nld/atlas-${ATLAS_VERSION}-${CLUSTER}${ATLAS_SUFFIX}/lib:${GCC_LD_LIBRARY_PATH}
+
+# Test GridMap
+python -c "import gridmap; import test_gridmap; \
+print(gridmap.grid_map(test_gridmap.get_environment, [None], \
+name='testgridmap', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
+temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
+add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
+completion_mail=True))" || exit $?
+
+# Test NumPy on cluster
+python -c "import gridmap; import test_gridmap; \
+gridmap.grid_map(test_gridmap.run_numpy_tests, [None], \
+name='testnumpy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
+temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
+add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
+completion_mail=True)" || exit $?
+
+# Test SciPy on cluster
+python -c "import gridmap; import test_gridmap; \
+gridmap.grid_map(test_gridmap.run_scipy_tests, [None], \
+name='testscipy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
+temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
+add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
+completion_mail=True)" || exit $?
+
+# Test h5py on cluster
+python -c "import gridmap; import test_gridmap; \
+gridmap.grid_map(test_gridmap.run_h5py_tests, [None], \
+name='testh5py', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
+temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
+add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
+completion_mail=True)" || exit $?
