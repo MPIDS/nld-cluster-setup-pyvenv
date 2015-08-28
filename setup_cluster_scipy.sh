@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # source configuration
-echo "Source configuration..."
+echo "Source configuration in setup_cluster_conf.sh ..."
 source setup_cluster_conf.sh || exit $?
 
 
 # Create Python virtual environment
-echo "\nCreate Python virtual environment..."
+echo -e "\nCreate Python virtual environment..."
 echo "${PYTHON_PREFIX}/bin/pyvenv ${VENV_PREFIX}"
 $PYTHON_PREFIX/bin/pyvenv $VENV_PREFIX || exit $?
 
 # Modify virtual environment
-echo "\nModify virtual environment in ${VENV_ACTIVATE}..."
+echo -e "\nModify virtual environment in ${VENV_ACTIVATE}..."
 cp $VENV_ACTIVATE $VENV_ACTIVATE.backup
 echo "" >> $VENV_ACTIVATE
 echo "# Manual additions" >> $VENV_ACTIVATE
@@ -39,14 +39,15 @@ diff $VENV_ACTIVATE.backup $VENV_ACTIVATE
 
 
 # Source virtual environment
-echo "\nSource virtual environment..."
+echo -e "\nSource virtual environment..."
+echo "source ${VENV_ACTIVATE}"
 source $VENV_ACTIVATE || exit $?
 
 # Install base packages
 $PIP_INSTALL_LOGIN pip || exit $?
 $PIP_INSTALL_LOGIN setuptools || exit $?
 $PIP_INSTALL_LOGIN readline || exit $?
-$PIP_INSTALL_LOGIN nose six pkgconfig setuptools-scm six future || exit $?
+$PIP_INSTALL_LOGIN nose six pkgconfig setuptools-scm future || exit $?
 $PIP_INSTALL_LOGIN --install-option "--zmq=${ZMQ_PREFIX}" pyzmq || exit $?
 $PIP_INSTALL_LOGIN git+git://github.com/andsor/gridmap || exit $?
 
@@ -61,24 +62,24 @@ qsub -q ${TEST_CLUSTER}.q -b yes -S /bin/bash -cwd -j yes -o ${VENV_PREFIX} \
 
 
 # Test NumPy on login
-echo "\nTest NumPy..."
+echo -e "\nTest NumPy..."
 python -c 'import numpy; numpy.show_config()' || exit $?
 python -c 'import numpy; numpy.test()' || exit $?
 
 # Test SciPy on login
-echo "\nTest SciPy..."
+echo -e "\nTest SciPy..."
 python -c 'import scipy; scipy.show_config()' || exit $?
 python -c 'import scipy; scipy.test()' || exit $?
 
 # Test h5py on login
-echo "\nTest h5py..."
+echo -e "\nTest h5py..."
 python -c 'import h5py; h5py.run_tests()' || exit $?
 
 CLUSTER=${TEST_CLUSTER}
 CLUSTER_LD_LIBRARY_PATH=/usr/nld/atlas-${ATLAS_VERSION}-${CLUSTER}${ATLAS_SUFFIX}/lib:${GCC_LD_LIBRARY_PATH}
 
 # Test GridMap
-echo "\nTest GridMap on cluster ${TEST_CLUSTER}..."
+echo -e "\nTest GridMap on cluster ${TEST_CLUSTER}..."
 python -c "import gridmap; import test_gridmap; \
 print(gridmap.grid_map(test_gridmap.get_environment, [None], \
 name='testgridmap', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
@@ -87,7 +88,7 @@ add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
 completion_mail=True))" || exit $?
 
 # Test NumPy on cluster
-echo "\nTest NumPy via GridMap on cluster ${TEST_CLUSTER}..."
+echo -e "\nTest NumPy via GridMap on cluster ${TEST_CLUSTER}..."
 python -c "import gridmap; import test_gridmap; \
 gridmap.grid_map(test_gridmap.run_numpy_tests, [None], \
 name='testnumpy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
@@ -96,7 +97,7 @@ add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
 completion_mail=True)" || exit $?
 
 # Test SciPy on cluster
-echo "\nTest SciPy via GridMap on cluster ${TEST_CLUSTER}..."
+echo -e "\nTest SciPy via GridMap on cluster ${TEST_CLUSTER}..."
 python -c "import gridmap; import test_gridmap; \
 gridmap.grid_map(test_gridmap.run_scipy_tests, [None], \
 name='testscipy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
@@ -105,7 +106,7 @@ add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
 completion_mail=True)" || exit $?
 
 # Test h5py on cluster
-echo "\nTest h5py via GridMap on cluster ${TEST_CLUSTER}..."
+echo -e "\nTest h5py via GridMap on cluster ${TEST_CLUSTER}..."
 python -c "import gridmap; import test_gridmap; \
 gridmap.grid_map(test_gridmap.run_h5py_tests, [None], \
 name='testh5py', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
