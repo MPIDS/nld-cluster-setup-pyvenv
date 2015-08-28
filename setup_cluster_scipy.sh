@@ -61,8 +61,9 @@ $PIP_DOWNLOAD_LOGIN numpy scipy h5py cython || exit $?
 # NOW EXECUTE setup_cluster_scipy_cluster.sh on one cluster of your choice
 # (default: skadi)
 echo "Submit cluster installation and compilation to queue..."
+_THIS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 qsub -q ${TEST_CLUSTER}.q -b yes -S /bin/bash -cwd -j yes -o ${VENV_PREFIX} \
--sync yes setup_cluster_scipy_cluster.sh || exit $?
+-sync yes ${_THIS_DIR}/setup_cluster_scipy_cluster.sh || exit $?
 
 
 # Test NumPy on login
