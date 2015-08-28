@@ -51,5 +51,5 @@ ATLAS_PREFIX=/usr/nld/atlas-${ATLAS_VERSION}-${ATLAS_CLUSTER}${ATLAS_SUFFIX}
 
 # pip
 PIP_INSTALL_LOGIN="pip install ${PIP_INSTALL_LOGIN_OPTIONS} --upgrade"
-PIP_DOWNLOAD_LOGIN="${PIP_INSTALL_LOGIN} --download ${VENV_PREFIX}"
+PIP_DOWNLOAD_LOGIN="${PIP_INSTALL_LOGIN} --download ${VENV_PREFIX} --no-deps"
 PIP_INSTALL_CLUSTER="pip install --no-index --find-links ${VENV_PREFIX} --upgrade"

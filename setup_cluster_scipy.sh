@@ -56,7 +56,7 @@ $PIP_INSTALL_LOGIN git+git://github.com/andsor/gridmap || exit $?
 
 # Download further packages for compilation on cluster
 echo -e "\nDownload further packages for compilation on cluster"
-$PIP_DOWNLOAD_LOGIN numpy scipy h5py || exit $?
+$PIP_DOWNLOAD_LOGIN numpy scipy h5py cython || exit $?
 
 # NOW EXECUTE setup_cluster_scipy_cluster.sh on one cluster of your choice
 # (default: skadi)
