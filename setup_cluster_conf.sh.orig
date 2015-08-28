@@ -28,8 +28,11 @@ ZMQ_PREFIX=/usr/nld/zeromq-4.0.4-skadi
 # DRMAA
 _DRMAA_LIBRARY_PATH=/core/ge/lib/linux-x64/libdrmaa.so
 
+# Compile libraries on which cluster?
+BUILD_CLUSTER=skadi
+
 # Run tests on which cluster?
-TEST_CLUSTER=skadi
+TEST_CLUSTERS="skadi frigg navier"
 
 
 # DO NOT CHANGE AFTER HERE

@@ -60,9 +60,9 @@ $PIP_DOWNLOAD_LOGIN numpy scipy h5py cython || exit $?
 
 # NOW EXECUTE setup_cluster_scipy_cluster.sh on one cluster of your choice
 # (default: skadi)
-echo "Submit cluster installation and compilation to queue..."
+echo "Submit cluster installation and compilation to queue ${BUILD_CLUSTER}..."
 _THIS_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-qsub -q ${TEST_CLUSTER}.q -b yes -S /bin/bash -cwd -j yes -o ${VENV_PREFIX} \
+qsub -q ${BUILD_CLUSTER}.q -b yes -S /bin/bash -cwd -j yes -o ${VENV_PREFIX} \
 -sync yes ${_THIS_DIR}/setup_cluster_scipy_cluster.sh || exit $?
 
 
@@ -80,41 +80,43 @@ python -c 'import scipy; scipy.test()' || exit $?
 echo -e "\nTest h5py..."
 python -c 'import h5py; h5py.run_tests()' || exit $?
 
-CLUSTER=${TEST_CLUSTER}
-CLUSTER_LD_LIBRARY_PATH=/usr/nld/atlas-${ATLAS_VERSION}-${CLUSTER}${ATLAS_SUFFIX}/lib:${GCC_LD_LIBRARY_PATH}
+for CLUSTER in $TEST_CLUSTERS; do
+    CLUSTER_LD_LIBRARY_PATH=/usr/nld/atlas-${ATLAS_VERSION}-${CLUSTER}${ATLAS_SUFFIX}/lib:${GCC_LD_LIBRARY_PATH}
+    
+    # Test GridMap
+    echo -e "\nTest GridMap on cluster ${CLUSTER}..."
+    python -c "import gridmap; import test_gridmap; \
+    print(gridmap.grid_map(test_gridmap.get_environment, [None], \
+    name='testgridmap', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
+    temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
+    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
+    completion_mail=True))" &
 
-# Test GridMap
-echo -e "\nTest GridMap on cluster ${TEST_CLUSTER}..."
-python -c "import gridmap; import test_gridmap; \
-print(gridmap.grid_map(test_gridmap.get_environment, [None], \
-name='testgridmap', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
-temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
-add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
-completion_mail=True))" || exit $?
+    # Test NumPy on cluster
+    echo -e "\nTest NumPy via GridMap on cluster ${CLUSTER}..."
+    python -c "import gridmap; import test_gridmap; \
+    gridmap.grid_map(test_gridmap.run_numpy_tests, [None], \
+    name='testnumpy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
+    temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
+    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
+    completion_mail=True)" &
 
-# Test NumPy on cluster
-echo -e "\nTest NumPy via GridMap on cluster ${TEST_CLUSTER}..."
-python -c "import gridmap; import test_gridmap; \
-gridmap.grid_map(test_gridmap.run_numpy_tests, [None], \
-name='testnumpy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
-temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
-add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
-completion_mail=True)" || exit $?
+    # Test SciPy on cluster
+    echo -e "\nTest SciPy via GridMap on cluster ${CLUSTER}..."
+    python -c "import gridmap; import test_gridmap; \
+    gridmap.grid_map(test_gridmap.run_scipy_tests, [None], \
+    name='testscipy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
+    temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
+    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
+    completion_mail=True)" &
 
-# Test SciPy on cluster
-echo -e "\nTest SciPy via GridMap on cluster ${TEST_CLUSTER}..."
-python -c "import gridmap; import test_gridmap; \
-gridmap.grid_map(test_gridmap.run_scipy_tests, [None], \
-name='testscipy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
-temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
-add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
-completion_mail=True)" || exit $?
+    # Test h5py on cluster
+    echo -e "\nTest h5py via GridMap on cluster ${CLUSTER}..."
+    python -c "import gridmap; import test_gridmap; \
+    gridmap.grid_map(test_gridmap.run_h5py_tests, [None], \
+    name='testh5py', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
+    temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
+    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
+    completion_mail=True)" &
 
-# Test h5py on cluster
-echo -e "\nTest h5py via GridMap on cluster ${TEST_CLUSTER}..."
-python -c "import gridmap; import test_gridmap; \
-gridmap.grid_map(test_gridmap.run_h5py_tests, [None], \
-name='testh5py', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
-temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
-add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
-completion_mail=True)" || exit $?
+done
