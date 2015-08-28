@@ -48,10 +48,14 @@ $PIP_INSTALL_LOGIN pip || exit $?
 $PIP_INSTALL_LOGIN setuptools || exit $?
 $PIP_INSTALL_LOGIN readline || exit $?
 $PIP_INSTALL_LOGIN nose six pkgconfig setuptools-scm future || exit $?
+
+echo -e "\nInstall pyzmq with --zmq=${ZMQ_PREFIX}"
 $PIP_INSTALL_LOGIN --install-option "--zmq=${ZMQ_PREFIX}" pyzmq || exit $?
+
 $PIP_INSTALL_LOGIN git+git://github.com/andsor/gridmap || exit $?
 
 # Download further packages for compilation on cluster
+echo -e "\nDownload further packages for compilation on cluster"
 $PIP_DOWNLOAD_LOGIN numpy scipy h5py || exit $?
 
 # NOW EXECUTE setup_cluster_scipy_cluster.sh on one cluster of your choice
