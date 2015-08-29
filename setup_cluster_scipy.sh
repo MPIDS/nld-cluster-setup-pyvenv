@@ -56,13 +56,19 @@ source $VENV_ACTIVATE || exit $?
 # Install base packages
 $PIP_INSTALL_LOGIN pip || exit $?
 $PIP_INSTALL_LOGIN setuptools || exit $?
-$PIP_INSTALL_LOGIN readline || exit $?
-$PIP_INSTALL_LOGIN nose six pkgconfig setuptools-scm future || exit $?
+$PIP_INSTALL_LOGIN wheel || exit $?
+
+$PIP_WHEEL_LOGIN_GENERAL readline || exit $?
+$PIP_INSTALL_LOGIN_GENERAL readline || exit $?
+$PIP_WHEEL_LOGIN_GENERAL nose six pkgconfig setuptools-scm future || exit $?
+$PIP_INSTALL_LOGIN_GENERAL nose six pkgconfig setuptools-scm future || exit $?
 
 echo -e "\nInstall pyzmq with --zmq=${ZMQ_PREFIX}"
-$PIP_INSTALL_LOGIN --install-option "--zmq=${ZMQ_PREFIX}" pyzmq || exit $?
+$PIP_WHEEL_LOGIN_ZMQ --build-option "--zmq=${ZMQ_PREFIX}" pyzmq || exit $?
+$PIP_INSTALL_LOGIN_ZMQ pyzmq || exit $?
 
-$PIP_INSTALL_LOGIN git+git://github.com/andsor/gridmap || exit $?
+$PIP_WHEEL_LOGIN_GENERAL git+git://github.com/andsor/gridmap || exit $?
+$PIP_INSTALL_LOGIN_GENERAL gridmap || exit $?
 
 # Download further packages for compilation on cluster
 echo -e "\nDownload further packages for compilation on cluster"

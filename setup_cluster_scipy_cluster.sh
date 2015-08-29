@@ -8,12 +8,16 @@ source $VENV_ACTIVATE || exit $?
 
 # Install NumPy
 export ATLAS=$ATLAS_PREFIX
+$PIP_WHEEL_CLUSTER_NUMPY numpy -v || exit $?
+$PIP_INSTALL_CLUSTER_NUMPY numpy || exit $?
+
 $PIP_INSTALL_CLUSTER numpy -v || exit $?
 python -c 'import numpy; numpy.show_config()' || exit $?
 python -c 'import numpy; numpy.test()' || exit $?
 
 # Install SciPy
-$PIP_INSTALL_CLUSTER scipy -v || exit $?
+$PIP_WHEEL_CLUSTER_SCIPY scipy -v || exit $?
+$PIP_INSTALL_CLUSTER_SCIPY scipy || exit $?
 python -c 'import scipy; scipy.show_config()' || exit $?
 
 # Fix SciPy issue https://github.com/scipy/scipy/issues/5197
@@ -22,5 +26,6 @@ python -c 'import scipy; scipy.test()' || exit $?
 
 # Install h5py
 export HDF5_DIR=$HDF_PREFIX
-$PIP_INSTALL_CLUSTER h5py -v || exit $?
+$PIP_WHEEL_CLUSTER_HDF h5py -v || exit $?
+$PIP_INSTALL_CLUSTER_HDF h5py || exit $?
 python -c 'import h5py; h5py.run_tests()' || exit $?

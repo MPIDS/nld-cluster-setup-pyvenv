@@ -14,6 +14,7 @@ PYTHON_PREFIX=/usr/nld/python-3.4.3b-cluster
 # virtual environment
 VENV_PREFIX="${HOME}/venvs/scipy"
 PIP_INSTALL_LOGIN_OPTIONS="--trusted-host pypi.python.org"
+PIP_WHEEL_LOGIN_OPTIONS="--trusted-host pypi.python.org"
 
 # ATLAS
 ATLAS_VERSION=3.8.4
@@ -60,11 +61,23 @@ ATLAS_PREFIX=/usr/nld/atlas-${ATLAS_VERSION}-${ATLAS_CLUSTER}${ATLAS_SUFFIX}
 
 # pip
 PIP_INSTALL_LOGIN="pip install ${PIP_INSTALL_LOGIN_OPTIONS} --upgrade"
+PIP_WHEEL_LOGIN="pip wheel ${PIP_WHEEL_LOGIN_OPTIONS}"
 PIP_DOWNLOAD_LOGIN="${PIP_INSTALL_LOGIN} --download ${VENV_PREFIX} --no-deps"
+PIP_WHEEL_CLUSTER="pip wheel --no-index --find-links ${VENV_PREFIX}"
 PIP_INSTALL_CLUSTER="pip install --no-index --find-links ${VENV_PREFIX} --upgrade"
-PIP_WHEEL_DIR_ROOT=${HOME}/envs/${CLUSTERNAME}/wheels/$(basename ${GCC_PREFIX})
-PIP_WHEEL_DIR=${PIP_WHEEL_DIR_ROOT}/general
+PIP_WHEEL_DIR_ROOT=${HOME}/envs/${CLUSTERNAME}/wheels/${CLUSTERNAME}--$(basename ${GCC_PREFIX})
+PIP_WHEEL_DIR_GENERAL=${PIP_WHEEL_DIR_ROOT}/general
 PIP_WHEEL_DIR_NUMPY=${PIP_WHEEL_DIR_ROOT}/numpy--$(basename ${ATLAS_PREFIX})
 PIP_WHEEL_DIR_SCIPY=${PIP_WHEEL_DIR_ROOT}/scipy--$(basename ${ATLAS_PREFIX})
 PIP_WHEEL_DIR_ZMQ=${PIP_WHEEL_DIR_ROOT}/pyzmq--$(basename ${ZMQ_PREFIX})
 PIP_WHEEL_DIR_HDF=${PIP_WHEEL_DIR_ROOT}/h5py--$(basename ${HDF_PREFIX})
+PIP_WHEEL_LOGIN_GENERAL="${PIP_WHEEL_LOGIN} --find-links ${PIP_WHEEL_DIR_GENERAL} --wheel-dir ${PIP_WHEEL_DIR_GENERAL}"
+PIP_INSTALL_LOGIN_GENERAL="pip install --no-index --find-links ${PIP_WHEEL_DIR_GENERAL}"
+PIP_WHEEL_LOGIN_ZMQ="${PIP_WHEEL_LOGIN} --find-links ${PIP_WHEEL_DIR_ZMQ} --wheel-dir ${PIP_WHEEL_DIR_ZMQ}"
+PIP_INSTALL_LOGIN_ZMQ="pip install --no-index --find-links ${PIP_WHEEL_DIR_ZMQ}"
+PIP_WHEEL_CLUSTER_NUMPY="${PIP_WHEEL_CLUSTER} --find-links ${PIP_WHEEL_DIR_NUMPY} --wheel-dir ${PIP_WHEEL_DIR_NUMPY}"
+PIP_INSTALL_CLUSTER_NUMPY="pip install --no-index --find-links ${PIP_WHEEL_DIR_NUMPY}"
+PIP_WHEEL_CLUSTER_SCIPY="${PIP_WHEEL_CLUSTER} --find-links ${PIP_WHEEL_DIR_SCIPY} --wheel-dir ${PIP_WHEEL_DIR_SCIPY}"
+PIP_INSTALL_CLUSTER_SCIPY="pip install --no-index --find-links ${PIP_WHEEL_DIR_SCIPY}"
+PIP_WHEEL_CLUSTER_HDF="${PIP_WHEEL_CLUSTER} --find-links ${PIP_WHEEL_DIR_HDF} --wheel-dir ${PIP_WHEEL_DIR_HDF}"
+PIP_INSTALL_CLUSTER_HDF="pip install --no-index --find-links ${PIP_WHEEL_DIR_HDF}"
