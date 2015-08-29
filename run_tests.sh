@@ -17,37 +17,33 @@ for CLUSTER in $TEST_CLUSTERS; do
     echo -e "\nTest GridMap on cluster ${CLUSTER}..."
     python -c "import gridmap; import test_gridmap; \
     print(gridmap.grid_map(test_gridmap.get_environment, [None], \
-    name='testgridmap', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
-    temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
-    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
-    completion_mail=True))" &
+    name='testgridmap-${CLUSTER}', queue='${CLUSTER}.q', \
+    ${TEST_GRIDMAP_PARAMS},
+    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}))" &
 
     # Test NumPy on cluster
     echo -e "\nTest NumPy via GridMap on cluster ${CLUSTER}..."
     python -c "import gridmap; import test_gridmap; \
     gridmap.grid_map(test_gridmap.run_numpy_tests, [None], \
-    name='testnumpy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
-    temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
-    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
-    completion_mail=True)" &
+    name='testnumpy-${CLUSTER}', queue='${CLUSTER}.q', \
+    ${TEST_GRIDMAP_PARAMS},
+    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'})" &
 
     # Test SciPy on cluster
     echo -e "\nTest SciPy via GridMap on cluster ${CLUSTER}..."
     python -c "import gridmap; import test_gridmap; \
     gridmap.grid_map(test_gridmap.run_scipy_tests, [None], \
-    name='testscipy', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
-    temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
-    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
-    completion_mail=True)" &
+    name='testscipy-${CLUSTER}', queue='${CLUSTER}.q', \
+    ${TEST_GRIDMAP_PARAMS},
+    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'})" &
 
     # Test h5py on cluster
     echo -e "\nTest h5py via GridMap on cluster ${CLUSTER}..."
     python -c "import gridmap; import test_gridmap; \
     gridmap.grid_map(test_gridmap.run_h5py_tests, [None], \
-    name='testh5py', quiet=False, require_cluster=True, queue='${CLUSTER}.q', \
-    temp_dir='${VENV_PREFIX}', local=False, copy_env=False, \
-    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'}, \
-    completion_mail=True)" &
+    name='testh5py-${CLUSTER}', queue='${CLUSTER}.q', \
+    ${TEST_GRIDMAP_PARAMS},
+    add_env={'LD_LIBRARY_PATH': '${CLUSTER_LD_LIBRARY_PATH}'})" &
 
 done
 

@@ -34,6 +34,9 @@ BUILD_CLUSTER=skadi
 # Run tests on which cluster?
 TEST_CLUSTERS="skadi frigg navier ull"
 
+TEST_GRIDMAP_PARAMS="quiet=False, require_cluster=True, \
+temp_dir='${VENV_PREFIX}', local=False, copy_env=False, completion_mail=True"
+
 
 # DO NOT CHANGE AFTER HERE
 
