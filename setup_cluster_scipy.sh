@@ -35,7 +35,7 @@ echo 'ATLAS_PREFIX=/usr/nld/atlas-'$ATLAS_VERSION'-${ATLAS_CLUSTER}'$ATLAS_SUFFI
 echo 'export LD_LIBRARY_PATH=${ATLAS_PREFIX}/lib:${LD_LIBRARY_PATH}' >> $VENV_ACTIVATE
 echo "" >> $VENV_ACTIVATE
 echo "# Queueing system settings" >> $VENV_ACTIVATE
-echo '[[ ${CLUSTERNAME} = login ]] && [[ ${SGE_CLUSTER_NAME} != NLD ]] && source ${QUEUEING_SETTINGS}' >> $VENV_ACTIVATE
+echo '[[ ${CLUSTERNAME} = login ]] && [[ ${SGE_CLUSTER_NAME} != NLD ]] && source '${QUEUEING_SETTINGS} >> $VENV_ACTIVATE
 echo "" >> $VENV_ACTIVATE
 echo "# DRMAA" >> $VENV_ACTIVATE
 echo "export DRMAA_LIBRARY_PATH=${_DRMAA_LIBRARY_PATH}" >> $VENV_ACTIVATE
