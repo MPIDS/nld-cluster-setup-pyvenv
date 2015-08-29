@@ -2,7 +2,9 @@
 Bash scripts to bootstrap a new Python 3 virtual environment with NumPy, SciPy and GridMap pre-installed
 
 # Acknowledgements
-H.W.G.
+
+- H.W.G. for sorting out the whole Python, NumPy/SciPy and ATLAS compilation process.
+- Debsankha Manik for the wheels blueprint.
 
 # Usage
 
