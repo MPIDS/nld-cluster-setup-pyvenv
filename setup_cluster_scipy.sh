@@ -53,6 +53,8 @@ echo -e "\nSource virtual environment..."
 echo "source ${VENV_ACTIVATE}"
 source $VENV_ACTIVATE || exit $?
 
+mkdir -p $PIP_CACHE || exit $?
+
 # Install base packages
 $PIP_INSTALL_LOGIN pip || exit $?
 $PIP_INSTALL_LOGIN setuptools || exit $?
