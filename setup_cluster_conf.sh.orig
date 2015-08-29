@@ -25,6 +25,9 @@ HDF_PREFIX=/usr/nld/hdf5-1.8.9
 # ZeroMQ
 ZMQ_PREFIX=/usr/nld/zeromq-4.0.4-skadi
 
+# Queueing system settings
+QUEUEING_SETTINGS=/core/ge/NLD/common/settings.sh
+
 # DRMAA
 _DRMAA_LIBRARY_PATH=/core/ge/lib/linux-x64/libdrmaa.so
 

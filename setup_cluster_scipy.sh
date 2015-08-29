@@ -4,6 +4,13 @@
 echo "Source configuration in setup_cluster_conf.sh ..."
 source setup_cluster_conf.sh || exit $?
 
+# source Queueing system settings
+if [[ ${SGE_CLUSTER_NAME} = NLD ]]; then
+    echo -e "\nQueueing system settings already sourced."
+else
+    echo -e "\nSourcing queueing system settings..."
+    source $QUEUEING_SETTINGS || exit $?
+fi
 
 # Create Python virtual environment
 echo -e "\nCreate Python virtual environment..."
@@ -26,6 +33,9 @@ echo "# ATLAS" >> $VENV_ACTIVATE
 echo "ATLAS_CLUSTER=${ATLAS_CLUSTER_EXPRESSION}" >> $VENV_ACTIVATE
 echo 'ATLAS_PREFIX=/usr/nld/atlas-'$ATLAS_VERSION'-${ATLAS_CLUSTER}'$ATLAS_SUFFIX >> $VENV_ACTIVATE
 echo 'export LD_LIBRARY_PATH=${ATLAS_PREFIX}/lib:${LD_LIBRARY_PATH}' >> $VENV_ACTIVATE
+echo "" >> $VENV_ACTIVATE
+echo "# Queueing system settings" >> $VENV_ACTIVATE
+echo '[[ ${CLUSTERNAME} = login ]] && [[ ${SGE_CLUSTER_NAME} != NLD ]] && source ${QUEUEING_SETTINGS}' >> $VENV_ACTIVATE
 echo "" >> $VENV_ACTIVATE
 echo "# DRMAA" >> $VENV_ACTIVATE
 echo "export DRMAA_LIBRARY_PATH=${_DRMAA_LIBRARY_PATH}" >> $VENV_ACTIVATE
