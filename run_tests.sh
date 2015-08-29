@@ -9,7 +9,7 @@ echo -e "\nSource virtual environment..."
 echo "source ${VENV_ACTIVATE}"
 source $VENV_ACTIVATE || exit $?
 
-$VENV_NAME = $(basename ${VENV_PREFIX})
+VENV_NAME=$(basename ${VENV_PREFIX})
 
 echo -e "\nSubmit test jobs to the clusters ${TEST_CLUSTERS}..."
 for CLUSTER in $TEST_CLUSTERS; do
