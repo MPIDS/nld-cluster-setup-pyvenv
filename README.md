@@ -24,3 +24,4 @@ The machine-dependent ATLAS libraries are linked in via ``$LD_LIBRARY_PATH``.
 - Compiles ``numpy`` and ``scipy`` and links towards cluster-specific ATLAS in ``/usr/nld/atlas-${ATLAS_VERSION}-${CLUSTER}${ATLAS_SUFFIX}``
 - Compiles ``h5py``
 - Scripts all the necessary environment variables into the ``$VENV_ACTIVATE`` script.
+- Builds and caches wheels. Wheels are built per package version, CLUSTER, GCC, and optionally ATLAS, HDF, or ZMQ. If any of these change, a new wheel is automatically built.
