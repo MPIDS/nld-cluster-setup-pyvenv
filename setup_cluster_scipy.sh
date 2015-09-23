@@ -69,7 +69,7 @@ echo -e "\nInstall pyzmq with --zmq=${ZMQ_PREFIX}"
 $PIP_WHEEL_LOGIN_ZMQ --build-option "--zmq=${ZMQ_PREFIX}" pyzmq || exit $?
 $PIP_INSTALL_LOGIN_ZMQ pyzmq || exit $?
 
-$PIP_WHEEL_LOGIN_GENERAL git+git://github.com/andsor/gridmap || exit $?
+$PIP_WHEEL_LOGIN_GENERAL git+git://github.com/pygridtools/gridmap || exit $?
 $PIP_INSTALL_LOGIN_GENERAL gridmap || exit $?
 
 # Download further packages for compilation on cluster
