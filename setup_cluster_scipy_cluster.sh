@@ -17,7 +17,7 @@ python -c 'import numpy; numpy.test()' || exit $?
 
 # Install SciPy
 $PIP_WHEEL_CLUSTER_SCIPY scipy -v || exit $?
-$PIP_INSTALL_CLUSTER_SCIPY scipy || exit $?
+$PIP_INSTALL_CLUSTER_SCIPY 'scipy>=0.18' || exit $?
 python -c 'import scipy; scipy.show_config()' || exit $?
 
 # Fix SciPy issue https://github.com/scipy/scipy/issues/5197
