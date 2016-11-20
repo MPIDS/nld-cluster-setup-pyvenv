@@ -21,7 +21,8 @@ $PIP_INSTALL_CLUSTER_SCIPY scipy || exit $?
 python -c 'import scipy; scipy.show_config()' || exit $?
 
 # Fix SciPy issue https://github.com/scipy/scipy/issues/5197
-sed -i '/assert_array_almost_equal_nulp(mstats.kurtosis(.*$/{$!{N;s/\(assert_array_almost_equal_nulp(mstats.kurtosis.*\n[[:blank:]]*\)\(stats.kurtosis(\)/# \1# \2/}}' $VENV_PREFIX/lib/python3.4/site-packages/scipy/stats/tests/test_mstats_basic.py
+# (fixed as of scipy 0.18)
+# sed -i '/assert_array_almost_equal_nulp(mstats.kurtosis(.*$/{$!{N;s/\(assert_array_almost_equal_nulp(mstats.kurtosis.*\n[[:blank:]]*\)\(stats.kurtosis(\)/# \1# \2/}}' $VENV_PREFIX/lib/python3.4/site-packages/scipy/stats/tests/test_mstats_basic.py
 python -c 'import scipy; scipy.test()' || exit $?
 
 # Install Cython
