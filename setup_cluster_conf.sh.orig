@@ -14,8 +14,8 @@ PYTHON_PREFIX=/usr/nld/python-3.4.3b-cluster
 # virtual environment
 VENV_PREFIX="${HOME}/venvs/scipy"
 PIP_UPGRADE_PIP_LOGIN_OPTIONS="--trusted-host pypi.python.org"
-PIP_INSTALL_LOGIN_OPTIONS="--trusted-host pypi.python.org --no-binary :all:"
-PIP_WHEEL_LOGIN_OPTIONS="--trusted-host pypi.python.org --no-binary :all:"
+PIP_INSTALL_LOGIN_OPTIONS="--trusted-host pypi.python.org"
+PIP_WHEEL_LOGIN_OPTIONS="--trusted-host pypi.python.org"
 PIP_DOWNLOAD_LOGIN_OPTIONS="--trusted-host pypi.python.org --no-binary :all:"
 
 # ATLAS
