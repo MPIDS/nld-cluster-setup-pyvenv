@@ -13,8 +13,10 @@ PYTHON_PREFIX=/usr/nld/python-3.4.3b-cluster
 
 # virtual environment
 VENV_PREFIX="${HOME}/venvs/scipy"
-PIP_INSTALL_LOGIN_OPTIONS="--trusted-host pypi.python.org"
-PIP_WHEEL_LOGIN_OPTIONS="--trusted-host pypi.python.org"
+PIP_UPGRADE_PIP_LOGIN_OPTIONS="--trusted-host pypi.python.org"
+PIP_INSTALL_LOGIN_OPTIONS="--trusted-host pypi.python.org --no-binary :all:"
+PIP_WHEEL_LOGIN_OPTIONS="--trusted-host pypi.python.org --no-binary :all:"
+PIP_DOWNLOAD_LOGIN_OPTIONS="--trusted-host pypi.python.org --no-binary :all:"
 
 # ATLAS
 ATLAS_VERSION=3.8.4
@@ -62,8 +64,9 @@ ATLAS_PREFIX=/usr/nld/atlas-${ATLAS_VERSION}-${ATLAS_CLUSTER}${ATLAS_SUFFIX}
 # pip
 PIP_CACHE=${HOME}/.cache/pip/download
 PIP_INSTALL_LOGIN="pip install ${PIP_INSTALL_LOGIN_OPTIONS} --upgrade"
+PIP_UPGRADE_PIP_LOGIN="pip install ${PIP_UPGRADE_PIP_LOGIN_OPTIONS} --upgrade"
 PIP_WHEEL_LOGIN="pip wheel ${PIP_WHEEL_LOGIN_OPTIONS}"
-PIP_DOWNLOAD_LOGIN="${PIP_INSTALL_LOGIN} --download ${PIP_CACHE} --no-deps"
+PIP_DOWNLOAD_LOGIN="pip download ${PIP_DOWNLOAD_LOGIN_OPTIONS} --dest ${PIP_CACHE} --no-deps"
 PIP_WHEEL_CLUSTER="pip wheel --no-index --find-links ${PIP_CACHE}"
 PIP_INSTALL_CLUSTER="pip install --no-index --find-links ${PIP_CACHE} --upgrade"
 PIP_WHEEL_DIR_ROOT=${HOME}/envs/${CLUSTERNAME}/wheels/${CLUSTERNAME}--$(basename ${GCC_PREFIX})
