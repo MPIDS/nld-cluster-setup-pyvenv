@@ -56,7 +56,7 @@ source $VENV_ACTIVATE || exit $?
 mkdir -p $PIP_CACHE || exit $?
 
 # Install base packages
-$PIP_INSTALL_LOGIN pip || exit $?
+$PIP_UPGRADE_PIP_LOGIN 'pip>=9' || exit $?
 $PIP_INSTALL_LOGIN setuptools || exit $?
 $PIP_INSTALL_LOGIN wheel || exit $?
 
@@ -74,7 +74,7 @@ $PIP_INSTALL_LOGIN_GENERAL gridmap || exit $?
 
 # Download further packages for compilation on cluster
 echo -e "\nDownload further packages for compilation on cluster"
-$PIP_DOWNLOAD_LOGIN numpy scipy h5py cython || exit $?
+$PIP_DOWNLOAD_LOGIN numpy 'scipy>=0.18' h5py cython || exit $?
 
 # NOW EXECUTE setup_cluster_scipy_cluster.sh on one cluster of your choice
 # (default: skadi)
